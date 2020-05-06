@@ -293,6 +293,9 @@ services:
       - type: bind
         source: ./python_django/Django_project_and_venv
         target: /home/simha/app
+      - type: bind
+        source: /home/web_dev/DONT_DELETE_env_django_basic_documentation/DO_NOT_DELETE_djang_basic_documentation_part2
+        target: /home/simha/env_dir
     command:
       - sh
       - -c
