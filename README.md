@@ -1,4 +1,5 @@
-# DJANGO PROJECT USING DOCKER
+# DJANGO PROJECT USING DOCKER (FOR PRODUCTION PURPOSE ONLY)
+Runs in debug mode and using runserver
 
 This project is continuation of the Basic Django Documentation2 https://github.com/sant527/django_basic_documentation_ver2 
 
