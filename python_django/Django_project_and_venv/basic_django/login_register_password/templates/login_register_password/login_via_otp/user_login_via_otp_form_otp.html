@@ -1,0 +1,18 @@
+{% extends 'login_register_password/base.html' %}
+
+{% block title %}Enter otp{% endblock %}
+
+{% block content %}
+  <h4>Enter Otp</h4>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Login</button>
+  </form>
+  <p>If you dont recieve the otp click to resend again</p>
+
+<form method="get">
+	<button type="submit" name="resendotp">Resend OTP</button>
+</form>
+
+{% endblock %}

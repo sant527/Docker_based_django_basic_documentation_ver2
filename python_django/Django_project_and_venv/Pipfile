@@ -1,0 +1,30 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+django-extensions = "*"
+ipython = "*"
+werkzeug = "*"
+pydotplus = "*"
+django-querycount = "*"
+jupyter = "*"
+flower = "*"
+django-request-logging = "*"
+
+[packages]
+django = "*"
+psycopg2 = "*"
+django-environ = "*"
+celery = "*"
+redis = "==3.3.11"
+pyjwt = "*"
+django-webpack-loader = "*"
+django-rest-framework = "*"
+kombu = "*"
+django-otp = "*"
+pyotp = "*"
+
+[requires]
+python_version = "3.7"

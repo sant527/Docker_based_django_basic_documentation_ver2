@@ -1,0 +1,72 @@
+[
+  {
+    "model": "polls.Question",
+    "pk": 1,
+    "fields": {
+      "question_text": "What's new?",
+      "pub_date": "2019-12-30 18:55:45.597537+05:30"
+    }
+  },
+  {
+    "model": "polls.Question",
+    "pk": 2,
+    "fields": {
+      "question_text": "How is life?",
+      "pub_date": "2019-12-31 18:55:45.597537+05:30"
+    }
+  },  
+  {
+    "model": "polls.Choice",
+    "pk": 1,
+    "fields": {
+      "question": 1,
+      "choice_text": "Not much",
+      "votes": "3"
+    }
+  },
+  {
+    "model": "polls.Choice",
+    "pk": 2,
+    "fields": {
+      "question": 1,
+      "choice_text": "The sky",
+      "votes": "2"
+    }
+  },
+  {
+    "model": "polls.Choice",
+    "pk": 3,
+    "fields": {
+      "question": 1,
+      "choice_text": "Just hacking again",
+      "votes": "4"
+    }
+  },  
+  {
+    "model": "polls.Choice",
+    "pk": 2,
+    "fields": {
+      "question": 2,
+      "choice_text": "Cool",
+      "votes": "1"
+    }
+  },
+  {
+    "model": "polls.Choice",
+    "pk": 2,
+    "fields": {
+      "question": 2,
+      "choice_text": "Great",
+      "votes": "7"
+    }
+  },
+  {
+    "model": "polls.Choice",
+    "pk": 2,
+    "fields": {
+      "question": 2,
+      "choice_text": "As usual",
+      "votes": "10"
+    }
+  }
+]

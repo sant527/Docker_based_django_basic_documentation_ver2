@@ -1,0 +1,29 @@
+[{
+    "model": "custom_user.ActionTypeForUserSessionLog",
+    "pk": 1,
+    "fields": {
+      "action": "pass_change"
+    }
+  },
+  {
+    "model": "custom_user.ActionTypeForUserSessionLog",
+    "pk": 2,
+    "fields": {
+      "action": "login_by_otp"
+    }
+  },
+  {
+    "model": "custom_user.ActionTypeForUserSessionLog",
+    "pk": 3,
+    "fields": {
+      "action": "login_by_pass"
+    }
+  },
+  {
+    "model": "custom_user.ActionTypeForUserSessionLog",
+    "pk": 4,
+    "fields": {
+      "action": "passlogin_email_validation"
+    }
+  }
+]

@@ -1,0 +1,12 @@
+{% extends 'login_register_password/base.html' %}
+
+{% block title %}Login via OTP{% endblock %}
+
+{% block content %}
+  <h2>Login via OTP</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Send OTP</button>
+  </form>
+{% endblock %}

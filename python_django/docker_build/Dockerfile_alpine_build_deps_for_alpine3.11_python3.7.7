@@ -1,0 +1,21 @@
+FROM django:python-3.7.7-alpin3.11
+
+#ALPINE --no-cache
+#Instead of using apk upadate && apk add some pak && rm -rf /var/cache/apk/*
+#We can do apk add --no-cache
+
+
+# From my experience, python:3.6-alpine is not well suited for installing packages with C extensions because of missing Python headers.
+# Alpine is not manylinux1-compatible, so any package containing C extensions must be built from source. This means you have to install the build tools first. 
+# Beware that python:3.6-alpine does not install Python via apk, it has Python built from source and located under /usr/local. So when you inherit from python:3.6-alpine, install python3-dev and run pip install pyzmq, you'll end up with building pyzmq for Python 3.6.6 (coming from python:3.6-alpine) using header files from Python 3.6.4 (coming from apk add python3-dev). In general, this shouldn't be an issue (header files are incompatible only between major Python releases), but may become an issue in case the header files were adapted by the distro maintai
+
+USER root
+
+RUN apk update \
+  # psycopg2 dependencies
+  && apk add --no-cache --virtual build-deps gcc python3-dev musl-dev \
+  # && apk add --no-cache postgresql-dev \ # (this we install in the django:python-3.7.7-alpin3.11)
+  # pyzmq dependencies
+  && apk add --no-cache build-base libzmq musl-dev zeromq-dev
+
+USER simha

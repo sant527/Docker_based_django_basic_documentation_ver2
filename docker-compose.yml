@@ -1,0 +1,122 @@
+# My version of docker = 18.09.4-ce
+# Compose file format supported till version 18.06.0+ is 3.7
+version: "3.7"
+services:
+
+  # ## Postgresl command
+  # $ docker run \
+  #     --rm \
+  #     --name some-postgres \
+  #     -e POSTGRES_PASSWORD=krishna \
+  #     -e PGDATA=/var/lib/postgresql/data/pgdata \
+  #     -v /home/web_dev/DO_NOT_DELETE_Docker_django_testing/postgresql:/var/lib/postgresql/data \
+  #     postgres:11-alpine
+
+  # change the DATABASE_URL=psql://POSTGRES_USER:POSTGRES_PASSWORD@SERVICE_NAME:5432/POSTGRES_DB in .evn file in the django project folder
+  # DATABASE_URL=psql://testing:testing@postgresql:5432/testing
+
+  postgresql:
+    image: "postgres:11-alpine"
+    volumes:
+      - type: bind
+        source: ./postgresql
+        target: /var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: 'simha' # this is optional because default it posstgres
+      POSTGRES_PASSWORD: 'krishna'
+      POSTGRES_DB: 'gauranga' # this is optional because default it postgres
+      PGDATA: '/var/lib/postgresql/data/pgdata'
+    networks:  # connect to the bridge
+      - postgresql_network
+    command: ["postgres", "-c", "log_statement=all","-c", "log_destination=stderr"]
+
+  redis:
+    image: "redis:5.0.9-alpine3.11"
+    #command: redis-server --requirepass sOmE_sEcUrE_pAsS
+    command: redis-server --requirepass gauranga
+    volumes:
+      - $PWD/redis/redis-data:/var/lib/redis
+      - $PWD/redis/redis.conf:/usr/local/etc/redis/redis.conf
+    environment:
+      - REDIS_REPLICATION_MODE=master
+    networks:  # connect to the bridge
+      - redis_network
+
+  celery:
+    image: django:python-3.7.7-alpin3.11
+    volumes:
+      - type: bind
+        source: ./python_django/Django_project_and_venv
+        target: /home/simha/app
+      - type: bind
+        source: /home/web_dev/DONT_DELETE_env_django_basic_documentation/DO_NOT_DELETE_djang_basic_documentation_part2
+        target: /home/simha/env_dir
+    command:
+      - sh
+      - -c
+      - |
+        cd basic_django
+        pipenv run celery -A basic_django worker --loglevel=debug #ensure redis-server is running in root
+    depends_on:  # wait for postgresql, redis to be "ready" before starting this service
+      - postgresql
+      - redis
+    networks:  # connect to the bridge
+      - postgresql_network
+      - redis_network
+
+
+  # ## webpage
+  # $ hostfolder="$(pwd)/python_django/Django_project_and_venv"
+  # dockerfolder="/home/simha/app"
+  # docker run -p 8888:8888 -it --rm -v ${hostfolder}:${dockerfolder} django:python-3.7.7-alpin3.11 pipenv run python basic_django/manage.py runserver 172.17.0.1:8888
+
+  webapp:
+    #image: "django:python-3.7.7-alpin3.11-with-builddeps"
+    image: "django:python-3.7.7-alpin3.11"
+    volumes:
+      - type: bind
+        source: ./python_django/Django_project_and_venv
+        target: /home/simha/app
+      - type: bind
+        source: /home/web_dev/DONT_DELETE_env_django_basic_documentation/DO_NOT_DELETE_djang_basic_documentation_part2
+        target: /home/simha/env_dir
+      # NOTE we have to import the .env from the host. This is for safety purpose 
+    ports:
+      - "8555:8888"
+    depends_on:  # wait for celery, postgresql, redis to be "ready" before starting this service
+      - celery
+      - postgresql
+      - redis
+    command: pipenv run python basic_django/manage.py runserver 0.0.0.0:8888
+    networks:  # connect to the bridge
+      - postgresql_network
+      - redis_network
+      - webapp_network
+
+  # ##phppgadmin
+  # $ docker run --name='phppgadmin' --rm \
+  #         --publish=8800:80 \
+  #         -e PHP_PG_ADMIN_SERVER_HOST="127.0.0.1" \
+  #         dockage/phppgadmin:latest
+
+  phppgadmin:
+    image: "dockage/phppgadmin:latest"
+    ports:
+      - "8890:80"
+    environment:
+      PHP_PG_ADMIN_SERVER_HOST: 'postgresql'
+    depends_on:  # wait for postgresql, redis to be "ready" before starting this service
+      - postgresql
+      - webapp
+    networks:  # connect to the bridge
+      - postgresql_network
+
+networks:
+  webapp_network:
+    driver: bridge
+  postgresql_network:
+    driver: bridge
+  redis_network:
+    driver: bridge
+
+

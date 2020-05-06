@@ -1,0 +1,44 @@
+FROM python:3.7.7-alpine3.11
+
+ENV PYTHONUNBUFFERED 1
+
+# If we use --no-cache in docker build then it will run all the layers
+# but we want only certain commands not to cache so we put this
+# and build using $ docker build -t django_testing --build-arg CACHEBUST=$(date +%s_%N) .
+ARG CACHEBUST=1
+
+
+
+# But we will need to install postgresql-dev because that required while running psycopg2
+# else it will give error:  django.core.exceptions.ImproperlyConfigured: Error loading psycopg2 module: Error loading shared library libpq.so.5: No such file or directory
+# I found that in alpine3.11 :: `libpq.so.5` is provided by `libpq-12.2-r0` which is a dependency for `postgresql-libs-12.2-r0` and which is a dependency for `postgresql-dev-12.2-r0`
+
+#psycopg2 dependencies
+RUN apk add --no-cache postgresql-dev
+
+
+# in alpine we user adduser instead of useradd.
+
+# in alpine users groupid is 100
+# create a user with userid 1000 and gid 100
+RUN adduser -u 1000 -G users -h /home/simha -D simha
+# -D No password
+
+# change permissions of /home/simha to 1000:100
+RUN chown 1000:100 /home/simha
+
+RUN pip install pipenv
+
+ENV PIPENV_VENV_IN_PROJECT 1
+
+WORKDIR /home/simha/app
+
+# WORKDIR will create a folder with root privilages so change it to simha:users
+# Note: when we do -v /host/folder:/home/simha/app then whatever the user:group
+# /host/folder is there /home/simha/app will become that
+# this is required only when are doing some files creation without bind mount
+# but for clearity we will do chown
+# ALSO chown for a root folder can be done by a root user only
+RUN chown 1000:100 /home/simha/app
+
+USER simha
