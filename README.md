@@ -365,6 +365,16 @@ networks:
     driver: bridge
 ```
 
+# Star the docker-compose
+Execute from the project directory root
+```sh
+docker-compose -f /home/web_dev/DO_NOT_DELETE_django_basic_documentation2/docker-compose.yml up
+```
+If we want to stop
+```
+docker-compose -f /home/web_dev/DO_NOT_DELETE_django_basic_documentation2/docker-compose.yml down
+```
+
 
 # Database:
 
