@@ -727,5 +727,7 @@ So we have to restart the webserver using
 docker-compose -p production -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose_production.yml restart webapp
 ```
 
+Now we can access the site for development using `http://127.0.0.1:8555/` and the phppgadmin at `http://127.0.0.1:8890`
 
-
+You can run both development and production same time
+But open in two browsers like chrome production and firefox development
