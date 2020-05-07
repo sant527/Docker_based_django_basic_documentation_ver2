@@ -369,11 +369,11 @@ networks:
 # Star the docker-compose
 Execute from the project directory root
 ```sh
-docker-compose -f /home/web_dev/DO_NOT_DELETE_django_basic_documentation2/docker-compose.yml up
+docker-compose -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose.yml up
 ```
 If we want to stop
 ```
-docker-compose -f /home/web_dev/DO_NOT_DELETE_django_basic_documentation2/docker-compose.yml down
+docker-compose -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose.yml down
 ```
 
 
@@ -386,11 +386,11 @@ Then use migrations
 ```sh
 Start the docker compose
 
-docker-compose -f /home/web_dev/DO_NOT_DELETE_django_basic_documentation2/docker-compose.yml up
+docker-compose -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose.yml up
 
 Then open separate docker exec
 
-docker exec -it do_not_delete_django_basic_documentation2_webapp_1 /bin/sh 
+docker exec -it do_not_delete_docker_based_django_basic_documentation2_webapp_1 /bin/sh 
 
 ~/app $ pwd
 /home/simha/app
@@ -436,11 +436,11 @@ python manage.py loaddata custom_user/fixtures/ActionTypeForUserSessionLog.json
 Single line commands instead of /bin/sh
 
 ```sh
-docker exec -it do_not_delete_django_basic_documentation2_webapp_1 pipenv run python basic_django/manage.py makemigrations
+docker exec -it do_not_delete_docker_based_django_basic_documentation2_webapp_1 pipenv run python basic_django/manage.py makemigrations
 
-docker exec -it do_not_delete_django_basic_documentation2_webapp_1 pipenv run python basic_django/manage.py migrate
+docker exec -it do_not_delete_docker_based_django_basic_documentation2_webapp_1 pipenv run python basic_django/manage.py migrate
 
-docker exec -it do_not_delete_django_basic_documentation2_webapp_1 pipenv run python basic_django/manage.py loaddata basic_django/custom_user/fixtures/ActionTypeForUserSessionLog.json
+docker exec -it do_not_delete_docker_based_django_basic_documentation2_webapp_1 pipenv run python basic_django/manage.py loaddata basic_django/custom_user/fixtures/ActionTypeForUserSessionLog.json
 ```
 
 ## Case2: want to restore data then use
@@ -470,7 +470,7 @@ pg_dump -Fc dbname > db_name.dump
       - postgresql_network
     command: ["postgres", "-c", "log_statement=all","-c", "log_destination=stderr"]
 
-docker exec -it do_not_delete_django_basic_documentation2_postgresql_1 /bin/sh
+docker exec -it do_not_delete_docker_based_django_basic_documentation2_postgresql_1 /bin/sh
 
 pg_restore -v -d testing -O -U testing -h localhost db_name.dump
 
@@ -488,6 +488,13 @@ Stop all containers and remove all the containers and network and dangling image
 $ docker stop $(docker ps -aq); docker container prune; docker image prune; docker network prune
 
 Start and stop the docker compose
-$ docker-compose -f /home/web_dev/DO_NOT_DELETE_django_basic_documentation2/docker-compose.yml down
-$ docker-compose -f /home/web_dev/DO_NOT_DELETE_django_basic_documentation2/docker-compose.yml up
+$ docker-compose -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose.yml down
+$ docker-compose -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose.yml up
 ```
+
+
+
+
+# PRODUCTION ENVIRONMENT
+
+We have to use `gunicorn` and `nginx` and `Debug=off` and only install `pipenv install` instead of `pipenv install --dev`
