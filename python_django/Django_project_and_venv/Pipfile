@@ -25,6 +25,7 @@ django-rest-framework = "*"
 kombu = "*"
 django-otp = "*"
 pyotp = "*"
+gunicorn = "*"
 
 [requires]
 python_version = "3.7"

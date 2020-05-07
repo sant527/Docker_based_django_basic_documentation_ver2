@@ -1,4 +1,9 @@
-# DJANGO PROJECT USING DOCKER (FOR PRODUCTION PURPOSE ONLY)
+# DJANGO PROJECT USING DOCKER 
+**(FOR DEVELOPMENT PURPOSE ONLY)** 
+
+For production browser down
+
+
 Runs in debug mode and using runserver
 
 This project is continuation of the Basic Django Documentation2 https://github.com/sant527/django_basic_documentation_ver2 
@@ -200,9 +205,9 @@ pipenv install --dev
 
 OR 
 
-hostfolder="$(pwd)/Django_project_and_venv"
-dockerfolder="/home/simha/app"
-docker run --rm -it -v ${hostfolder}:${dockerfolder} django:python-3.7.7-alpin3.11-with-builddeps pipenv install --dev
+  hostfolder="$(pwd)/Django_project_and_venv"
+  dockerfolder="/home/simha/app"
+  docker run --rm -it -v ${hostfolder}:${dockerfolder} django:python-3.7.7-alpin3.11-with-builddeps pipenv install --dev
 ```
 
 ## Whenever something is not installing then use the django:python-3.7.7-alpin3.11-with-builddeps otherwise we will use django:python-3.7.7-alpin3.11
@@ -328,7 +333,7 @@ services:
         target: /home/simha/env_dir
       # NOTE we have to import the .env from the host. This is for safety purpose 
     ports:
-      - "8555:8888"
+      - "8556:8888"
     depends_on:  # wait for celery, postgresql, redis to be "ready" before starting this service
       - celery
       - postgresql
@@ -348,7 +353,7 @@ services:
   phppgadmin:
     image: "dockage/phppgadmin:latest"
     ports:
-      - "8890:80"
+      - "8891:80"
     environment:
       PHP_PG_ADMIN_SERVER_HOST: 'postgresql'
     depends_on:  # wait for postgresql, redis to be "ready" before starting this service
@@ -483,18 +488,244 @@ testing which is used to connect
 -h localhost
 ```
 # Some Docker commands
-```
-Stop all containers and remove all the containers and network and dangling images
-$ docker stop $(docker ps -aq); docker container prune; docker image prune; docker network prune
+```sh
+#Stop all containers and remove all the containers and network and dangling images
 
-Start and stop the docker compose
-$ docker-compose -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose.yml down
-$ docker-compose -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose.yml up
+docker stop $(docker ps -aq); docker container prune; docker image prune; docker network prune
+
+#Start and stop the docker compose
+
+docker-compose -p development -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose.yml down
+
+docker-compose -p development -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose.yml up
+
+#To restart a service (is we change settings file etc)
+docker-compose -p development -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose.yml restart webapp
+
+docker-compose -p development -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose.yml restart postgresql
 ```
 
+Now we can access the site for development using `http://127.0.0.1:8556/` and the phppgadmin at `http://127.0.0.1:8891`
+
+# GIT IGNORE all files inside a folder but not the folder
+
+include a .gitignore file in your upload folder with this content
+
+```
+# Ignore everything in this directory
+*
+# Except this file
+!.gitignore
+```
+
+So add a .gitignore file under postgresql and redis
 
 
 
 # PRODUCTION ENVIRONMENT
 
 We have to use `gunicorn` and `nginx` and `Debug=off` and only install `pipenv install` instead of `pipenv install --dev`
+
+```sh
+pipenv install gunicorn (NOTE dont terminate while Pipfile.lock is getting updated. It will start wierd behaviour later on saying dependency issues)
+```
+
+# nginx config file
+
+create a folder called `nginx` and create a file called `local.conf` with the following in it
+
+```sh
+# first we declare our upstream server, which is our Gunicorn application
+upstream hello_server {
+    # docker will automatically resolve this to the correct address
+    # because we use the same name as the service: "djangoapp"
+    server webapp:8888;
+}
+
+# now we declare our main server
+server {
+
+    listen 8558;
+    server_name localhost;
+
+    location / {
+        # everything is passed to Gunicorn
+        proxy_pass http://hello_server;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        #proxy_set_header Host $host; # This will not show port number and will create problems
+        # https://serverfault.com/a/916736/565479
+        # https://stackoverflow.com/questions/61662073/django-nginx-http-host-does-not-show-port-number
+        proxy_set_header Host $http_host;
+        proxy_redirect off;
+    }
+}
+```
+
+
+We will create a seprate `docker-compose_production.xml` for production
+
+```sh
+# My version of docker = 18.09.4-ce
+# Compose file format supported till version 18.06.0+ is 3.7
+version: "3.7"
+services:
+
+  # ## Postgresl command
+  # $ docker run \
+  #     --rm \
+  #     --name some-postgres \
+  #     -e POSTGRES_PASSWORD=krishna \
+  #     -e PGDATA=/var/lib/postgresql/data/pgdata \
+  #     -v /home/web_dev/DO_NOT_DELETE_Docker_django_testing/postgresql:/var/lib/postgresql/data \
+  #     postgres:11-alpine
+
+  # change the DATABASE_URL=psql://POSTGRES_USER:POSTGRES_PASSWORD@SERVICE_NAME:5432/POSTGRES_DB in .evn file in the django project folder
+  # DATABASE_URL=psql://testing:testing@postgresql:5432/testing
+
+  postgresql:
+    image: "postgres:11-alpine"
+    volumes:
+      - type: bind
+        source: ./postgresql
+        target: /var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: 'simha' # this is optional because default it posstgres
+      POSTGRES_PASSWORD: 'krishna'
+      POSTGRES_DB: 'gauranga' # this is optional because default it postgres
+      PGDATA: '/var/lib/postgresql/data/pgdata'
+    networks:  # connect to the bridge
+      - postgresql_network
+    command: ["postgres", "-c", "log_statement=all","-c", "log_destination=stderr"]
+
+  redis:
+    image: "redis:5.0.9-alpine3.11"
+    #command: redis-server --requirepass sOmE_sEcUrE_pAsS
+    command: redis-server --requirepass gauranga
+    volumes:
+      - $PWD/redis/redis-data:/var/lib/redis
+      - $PWD/redis/redis.conf:/usr/local/etc/redis/redis.conf
+    environment:
+      - REDIS_REPLICATION_MODE=master
+    networks:  # connect to the bridge
+      - redis_network
+
+  celery:
+    image: django:python-3.7.7-alpin3.11
+    volumes:
+      - type: bind
+        source: ./python_django/Django_project_and_venv
+        target: /home/simha/app
+      - type: bind
+        source: /home/web_dev/DONT_DELETE_env_django_basic_documentation/DO_NOT_DELETE_djang_basic_documentation_part2
+        target: /home/simha/env_dir
+    command:
+      - sh
+      - -c
+      - |
+        cd basic_django
+        pipenv run celery -A basic_django worker --loglevel=debug #ensure redis-server is running in root
+    depends_on:  # wait for postgresql, redis to be "ready" before starting this service
+      - postgresql
+      - redis
+    networks:  # connect to the bridge
+      - postgresql_network
+      - redis_network
+
+
+  # ## webpage
+  # $ hostfolder="$(pwd)/python_django/Django_project_and_venv"
+  # dockerfolder="/home/simha/app"
+  # docker run -p 8888:8888 -it --rm -v ${hostfolder}:${dockerfolder} django:python-3.7.7-alpin3.11 pipenv run python basic_django/manage.py runserver 172.17.0.1:8888
+
+  nginx:
+    image: nginx:1.18.0-alpine
+    ports:
+      - 8555:8558
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+    depends_on:  # <-- wait for webapp to be "ready" before starting this service
+      - webapp
+    networks:  # connect to the bridge
+      - webapp_network
+
+  webapp:
+    #image: "django:python-3.7.7-alpin3.11-with-builddeps"
+    image: "django:python-3.7.7-alpin3.11"
+    volumes:
+      - type: bind
+        source: ./python_django/Django_project_and_venv
+        target: /home/simha/app
+      - type: bind
+        source: /home/web_dev/DONT_DELETE_env_django_basic_documentation/DO_NOT_DELETE_djang_basic_documentation_part2
+        target: /home/simha/env_dir
+      # NOTE we have to import the .env from the host. This is for safety purpose 
+    depends_on:  # wait for celery, postgresql, redis to be "ready" before starting this service
+      - celery
+      - postgresql
+      - redis
+    #command: pipenv run python basic_django/manage.py runserver 0.0.0.0:8888
+    #CMD ["gunicorn", "--chdir", "hello", "--bind", ":8000", "hello.wsgi:application"]
+    command:
+      - sh
+      - -c
+      - |
+        cd basic_django
+        pipenv run gunicorn --bind :8888 basic_django.wsgi:application
+    networks:  # connect to the bridge
+      - postgresql_network
+      - redis_network
+      - webapp_network
+
+  # ##phppgadmin
+  # $ docker run --name='phppgadmin' --rm \
+  #         --publish=8800:80 \
+  #         -e PHP_PG_ADMIN_SERVER_HOST="127.0.0.1" \
+  #         dockage/phppgadmin:latest
+
+  phppgadmin:
+    image: "dockage/phppgadmin:latest"
+    ports:
+      - "8890:80"
+    environment:
+      PHP_PG_ADMIN_SERVER_HOST: 'postgresql'
+    depends_on:  # wait for postgresql, redis to be "ready" before starting this service
+      - postgresql
+      - webapp
+    networks:  # connect to the bridge
+      - postgresql_network
+
+networks:
+  webapp_network:
+    driver: bridge
+  postgresql_network:
+    driver: bridge
+  redis_network:
+    driver: bridge
+```
+
+Now run
+
+```sh
+#To start the server
+docker-compose -p production -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose_production.yml up
+
+#To stop the server
+docker-compose -p production -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose_production.yml up
+
+#Also want to restart
+docker-compose -p production -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose_production.yml restart nginx
+
+docker-compose -p production -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose_production.yml restart webapp
+```
+
+# gunicorn does not keep track of changes so need restart
+
+Whenever we change code in the view.py. It doesn not reflect immidiately like runserver
+So we have to restart the webserver using
+
+```sh
+docker-compose -p production -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose_production.yml restart webapp
+```
+
+
+
