@@ -245,7 +245,7 @@ If file already exists then no need to do any thing.
 **(TO BE DONE AFTER DOWNLOADING THE REPO)**
 Here we are mounting the project folder to the docker container.
 
-So modify `/home/web_dev/DONT_DELETE_env_django_basic_documentation/DO_NOT_DELETE_djang_basic_documentation_part2` as per the need
+So modify `/home/web_dev/DONT_DELETE_env_django_basic_documentation/DO_NOT_DELETE_djang_basic_documentation_part2`for `celery` and `webapp` as per the need
 
 **(FOR preparing the git repo only.)**
 ```sh
@@ -371,31 +371,21 @@ networks:
     driver: bridge
 ```
 
-# Star the docker-compose
-Execute from the project directory root
-```sh
-docker-compose -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose.yml up
-```
-If we want to stop
-```
-docker-compose -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose.yml down
-```
 
 
 # Database:
 
 ## Case 1: Start fresh
-**(TO BE DONE AFTER DOWNLOADING THE REPO)**
 Then use migrations
 
 ```sh
 Start the docker compose
 
-docker-compose -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose.yml up
+docker-compose -p development -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose.yml up
 
 Then open separate docker exec
 
-docker exec -it do_not_delete_docker_based_django_basic_documentation2_webapp_1 /bin/sh 
+docker-compose -p development -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose.yml exec webapp /bin/sh
 
 ~/app $ pwd
 /home/simha/app
@@ -439,13 +429,14 @@ python manage.py loaddata custom_user/fixtures/ActionTypeForUserSessionLog.json
 ```
 
 Single line commands instead of /bin/sh
+**(TO BE DONE AFTER DOWNLOADING THE REPO)**
 
 ```sh
-docker exec -it do_not_delete_docker_based_django_basic_documentation2_webapp_1 pipenv run python basic_django/manage.py makemigrations
+docker-compose -p development -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose.yml exec webapp pipenv run python basic_django/manage.py makemigrations
 
-docker exec -it do_not_delete_docker_based_django_basic_documentation2_webapp_1 pipenv run python basic_django/manage.py migrate
+docker-compose -p development -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose.yml exec webapp pipenv run python basic_django/manage.py migrate
 
-docker exec -it do_not_delete_docker_based_django_basic_documentation2_webapp_1 pipenv run python basic_django/manage.py loaddata basic_django/custom_user/fixtures/ActionTypeForUserSessionLog.json
+docker-compose -p development -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose.yml exec webapp pipenv run python basic_django/manage.py loaddata basic_django/custom_user/fixtures/ActionTypeForUserSessionLog.json
 ```
 
 ## Case2: want to restore data then use
@@ -475,9 +466,9 @@ pg_dump -Fc dbname > db_name.dump
       - postgresql_network
     command: ["postgres", "-c", "log_statement=all","-c", "log_destination=stderr"]
 
-docker exec -it do_not_delete_docker_based_django_basic_documentation2_postgresql_1 /bin/sh
+docker-compose -p development -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose.yml exec postgresql /bin/sh
 
-pg_restore -v -d testing -O -U testing -h localhost db_name.dump
+pg_restore -v -d gauranga -O -U simha -h localhost db_name.dump
 
 -v verbose mode
 -d database name to connect
@@ -487,25 +478,29 @@ testing which is used to connect
 -U username to be used to connect
 -h localhost
 ```
-# Some Docker commands
+# Start and Stop the docker-compose Some Docker commands
+**(TO BE DONE AFTER DOWNLOADING THE REPO)**
 ```sh
-#Stop all containers and remove all the containers and network and dangling images
-
-docker stop $(docker ps -aq); docker container prune; docker image prune; docker network prune
-
 #Start and stop the docker compose
 
-docker-compose -p development -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose.yml down
-
 docker-compose -p development -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose.yml up
+
+docker-compose -p development -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose.yml down
 
 #To restart a service (is we change settings file etc)
 docker-compose -p development -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose.yml restart webapp
 
 docker-compose -p development -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose.yml restart postgresql
+
+#Stop all containers and remove all the containers and network and dangling images
+
+docker stop $(docker ps -aq); docker container prune; docker image prune; docker network prune
 ```
 
+**(TO BE DONE AFTER DOWNLOADING THE REPO)**
 Now we can access the site for development using `http://127.0.0.1:8556/` and the phppgadmin at `http://127.0.0.1:8891`
+
+
 
 # GIT IGNORE all files inside a folder but not the folder
 
@@ -704,6 +699,7 @@ networks:
 ```
 
 Now run
+**(TO BE DONE AFTER DOWNLOADING THE REPO - ONLY FOR PRODUCTION)** 
 
 ```sh
 #To start the server
@@ -726,6 +722,8 @@ So we have to restart the webserver using
 ```sh
 docker-compose -p production -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose_production.yml restart webapp
 ```
+
+**(TO BE DONE AFTER DOWNLOADING THE REPO - ONLY FOR PRODUCTION)** 
 
 Now we can access the site for development using `http://127.0.0.1:8555/` and the phppgadmin at `http://127.0.0.1:8890`
 
