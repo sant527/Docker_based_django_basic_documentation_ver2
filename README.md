@@ -12,6 +12,10 @@ The same project is now implemented using Docker environment
 
 We use postgre, django, celery, redis, phppgadmin, jupyter etc
 
+Note: `/home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2` is my `PROJECT_FOLDER`
+So replace it with the your path whereever needed
+
+
 ```
 $ docker --version
 Docker version 18.09.4-ce, build d14af54266
@@ -209,6 +213,8 @@ OR
   dockerfolder="/home/simha/app"
   docker run --rm -it -v ${hostfolder}:${dockerfolder} django:python-3.7.7-alpin3.11-with-builddeps pipenv install --dev
 ```
+
+![](./images/5j1KTj9ATV.png)
 
 ## Whenever something is not installing then use the django:python-3.7.7-alpin3.11-with-builddeps otherwise we will use django:python-3.7.7-alpin3.11
 **(TO BE DONE AFTER DOWNLOADING THE REPO)**
@@ -428,16 +434,52 @@ ALSO ActionTypeForUserSessionLog have to be fed into the database so do
 python manage.py loaddata custom_user/fixtures/ActionTypeForUserSessionLog.json
 ```
 
-Single line commands instead of /bin/sh
+**Single line commands instead of /bin/sh**
+
 **(TO BE DONE AFTER DOWNLOADING THE REPO)**
 
 ```sh
+Note: /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2 is my projectfolder
+So replace it with the your path
+
+Start the docker compose 
+
+docker-compose -p development -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose.yml up
+
+Run the following on another terminal
+
 docker-compose -p development -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose.yml exec webapp pipenv run python basic_django/manage.py makemigrations
 
 docker-compose -p development -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose.yml exec webapp pipenv run python basic_django/manage.py migrate
 
 docker-compose -p development -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose.yml exec webapp pipenv run python basic_django/manage.py loaddata basic_django/custom_user/fixtures/ActionTypeForUserSessionLog.json
 ```
+
+After settings the database check it on `http://127.0.0.1:8891` with login `simha` pass `krishna`
+
+Page 1:
+
+<img src="./images/JyeGvLHGOx.png"/>
+
+Page2:
+
+<img src="./images/c6Wk_HZX4n.png"/>
+
+Page3:
+
+<img src="./images/t84ImeOLki.png"/>
+
+Page4:
+
+<img src="./images/kbt4nDMVmH.png"/>
+
+Page5:
+```
+Due to:
+
+docker-compose -p development -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose.yml exec webapp pipenv run python basic_django/manage.py loaddata basic_django/custom_user/fixtures/ActionTypeForUserSessionLog.json
+```
+<img src="./images/vYaDRRJgu4.png"/>
 
 ## Case2: want to restore data then use
 **(FOR BACKING UP AND USING AGAIN)**
