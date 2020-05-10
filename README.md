@@ -234,13 +234,19 @@ $ ln -s ANY_STRING test_link/.env
 
 $ ls -al test_link/.env
 lrwxrwxrwx 1 simha users 10 May  6 23:31 test_link/.env -> ANY_STRING
+```
 
 
-``So we have to create a link from`` `/home/simha/env_dir/.env` to  `/home/simha/app/basic_django/basic_django/.env` i.e `/home/web_dev/DO_NOT_DELETE_django_basic_documentation2/python_django/Django_project_and_venv/basic_django/basic_django/.env`
+
+So we have to create a link from `/home/simha/env_dir/.env` to  `/home/simha/app/basic_django/basic_django/.env` i.e `/home/web_dev/DO_NOT_DELETE_django_basic_documentation2/python_django/Django_project_and_venv/basic_django/basic_django/.env`
 
 That we can do by 
 
-ln -s /home/simha/env_dir/.env /home/web_dev/DO_NOT_DELETE_django_basic_documentation2/python_django/Django_project_and_venv/basic_django/basic_django/.env
+**(TO BE DONE AFTER DOWNLOADING THE REPO)**
+
+```sh
+cd PROJECT_DIR
+ln -s /home/simha/env_dir/.env ./python_django/Django_project_and_venv/basic_django/basic_django/.env
 
 If file already exists then no need to do any thing.
 
