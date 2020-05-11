@@ -93,6 +93,28 @@ services:
       - redis_network
       - webapp_network
 
+  jupyter:
+    # Jupyter needs buildversion: Error loading shared library libzmq.so.5
+    image: "django:python-3.7.7-alpin3.11-with-builddeps"
+    #image: "django:python-3.7.7-alpin3.11"
+    volumes:
+      - type: bind
+        source: ./python_django/Django_project_and_venv
+        target: /home/simha/app
+      - type: bind
+        source: /home/web_dev/DONT_DELETE_env_django_basic_documentation/DO_NOT_DELETE_djang_basic_documentation_part2
+        target: /home/simha/env_dir
+      # NOTE we have to import the .env from the host. This is for safety purpose 
+    ports:
+      - "8888:8888"
+    depends_on:  # wait for celery, postgresql, redis to be "ready" before starting this service
+      - webapp
+    command: pipenv run python basic_django/manage.py shell_plus --notebook
+    networks:  # connect to the bridge
+      - postgresql_network
+      - redis_network
+      - webapp_network
+
   # ##phppgadmin
   # $ docker run --name='phppgadmin' --rm \
   #         --publish=8800:80 \
