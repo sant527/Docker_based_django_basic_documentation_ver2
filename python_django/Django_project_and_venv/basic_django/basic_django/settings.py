@@ -150,6 +150,17 @@ if DEBUG:
         'RESPONSE_HEADER': 'X-DjangoQueryCount-Count'
     }
 
+# https://stackoverflow.com/questions/29631960/what-is-the-way-to-set-ipython-notebook-server-parameters-when-running-notebook
+# Generally we use ./manage.py shell_plus --notebook
+# jupyter to start
+NOTEBOOK_ARGUMENTS = [
+    # exposes IP and port
+    '--ip=0.0.0.0',
+    '--port=8888',
+    # disables the browser
+    '--no-browser',
+]
+
 ROOT_URLCONF = 'basic_django.urls'
 
 TEMPLATES = [
