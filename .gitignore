@@ -67,6 +67,8 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 
+!python_django/Pipenv_cache_directory/.cache
+
 # Translations
 *.mo
 

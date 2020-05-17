@@ -80,6 +80,12 @@ services:
       - type: bind
         source: /home/web_dev/DONT_DELETE_env_django_basic_documentation/DO_NOT_DELETE_djang_basic_documentation_part2
         target: /home/simha/env_dir
+      - type: bind # .cache of pipenv will avoid to download the .whl files again
+        source: ./python_django/Pipenv_cache_directory/.cache/pip-tools
+        target: /home/simha/.cache/pip-tools
+      - type: bind # .cache of pipenv will avoid to download the .whl files again
+        source: ./python_django/Pipenv_cache_directory/.cache/pipenv
+        target: /home/simha/.cache/pipenv
       # NOTE we have to import the .env from the host. This is for safety purpose 
     ports:
       - "8556:8888"
@@ -107,6 +113,12 @@ services:
       - type: bind
         source: /home/web_dev/DONT_DELETE_env_django_basic_documentation/DO_NOT_DELETE_djang_basic_documentation_part2
         target: /home/simha/env_dir
+      - type: bind # .cache of pipenv will avoid to download the .whl files again
+        source: ./python_django/Pipenv_cache_directory/.cache/pip-tools
+        target: /home/simha/.cache/pip-tools
+      - type: bind # .cache of pipenv will avoid to download the .whl files again
+        source: ./python_django/Pipenv_cache_directory/.cache/pipenv
+        target: /home/simha/.cache/pipenv
       # NOTE we have to import the .env from the host. This is for safety purpose 
     ports:
       - "8888:8888"
