@@ -702,16 +702,20 @@ testing which is used to connect
 # Start and Stop the docker-compose Some Docker commands
 **(TO BE DONE AFTER DOWNLOADING THE REPO)**
 ```sh
+ALL THE BELOW COMMANDS TO BE EXECUTED FROM PROJECT FOLDER ONLY
+
+cd PROJECT_FOLDER
+
 #Start and stop the docker compose
 
-docker-compose -p development -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose.yml up
+docker-compose -p development -f ./docker-compose.yml up
 
-docker-compose -p development -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose.yml down
+docker-compose -p development -f ./docker-compose.yml down
 
 #To restart a service (is we change settings file etc)
-docker-compose -p development -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose.yml restart webapp
+docker-compose -p development -f ./docker-compose.yml restart webapp
 
-docker-compose -p development -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose.yml restart postgresql
+docker-compose -p development -f ./docker-compose.yml restart postgresql
 
 #Stop all containers and remove all the containers and network and dangling images
 
