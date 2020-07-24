@@ -67,6 +67,7 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 
+# add this in order to avoid ignoring this cache file
 !python_django/Pipenv_cache_directory/.cache
 
 # Translations

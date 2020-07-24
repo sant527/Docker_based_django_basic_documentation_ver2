@@ -611,20 +611,27 @@ python manage.py loaddata custom_user/fixtures/ActionTypeForUserSessionLog.json
 **(TO BE DONE AFTER DOWNLOADING THE REPO)**
 
 ```sh
-Note: /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2 is my projectfolder
-So replace it with the your path
+Change to PROJECT_FOLDER
+
+cd PROJECT_FOLDER
 
 Start the docker compose 
 
 docker-compose -p development -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose.yml up
 
+
+
 Run the following on another terminal
 
-docker-compose -p development -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose.yml exec webapp pipenv run python basic_django/manage.py makemigrations
+Change to PROJECT_FOLDER
 
-docker-compose -p development -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose.yml exec webapp pipenv run python basic_django/manage.py migrate
+cd PROJECT_FOLDER
 
-docker-compose -p development -f /home/web_dev/DO_NOT_DELETE_Docker_based_django_basic_documentation2/docker-compose.yml exec webapp pipenv run python basic_django/manage.py loaddata basic_django/custom_user/fixtures/ActionTypeForUserSessionLog.json
+docker-compose -p development -f ./docker-compose.yml exec webapp pipenv run python basic_django/manage.py makemigrations
+
+docker-compose -p development -f ./docker-compose.yml exec webapp pipenv run python basic_django/manage.py migrate
+
+docker-compose -p development -f ./docker-compose.yml exec webapp pipenv run python basic_django/manage.py loaddata basic_django/custom_user/fixtures/ActionTypeForUserSessionLog.json
 ```
 
 After settings the database check it on `http://127.0.0.1:8891` with login `simha` pass `krishna`
@@ -943,3 +950,48 @@ Now we can access the site for development using `http://127.0.0.1:8555/` and th
 
 You can run both development and production same time
 But open in two browsers like chrome production and firefox development
+
+
+**(TO BE DONE AFTER INSTALLING DJANGO USING PIPENV)**
+
+# Add separator after manage.py
+
+Open file `django/core/management/commands/runserver.py`
+
+**Change**
+
+```python
+        self.stdout.write((
+            "Django version %(version)s, using settings %(settings)r\n"
+            "Starting development server at %(protocol)s://%(addr)s:%(port)s/\n"
+            "Quit the server with %(quit_command)s.\n"
+        ) % {
+            "version": self.get_version(),
+            "settings": settings.SETTINGS_MODULE,
+            "protocol": self.protocol,
+            "addr": '[%s]' % self.addr if self._raw_ipv6 else self.addr,
+            "port": self.port,
+            "quit_command": quit_command,
+        })
+```
+**TO**
+
+```python
+        self.stdout.write((
+            "Django version %(version)s, using settings %(settings)r\n"
+            "Starting development server at %(protocol)s://%(addr)s:%(port)s/\n"
+            "Quit the server with %(quit_command)s.\n"
+            "\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n############################################################################################\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))\n(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n"
+            "\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n############################################################################################\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))\n(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n"
+            "\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n############################################################################################\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))\n(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n"
+            "\n$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n############################################################################################\n@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))\n(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n"
+        ) % {
+            "version": self.get_version(),
+            "settings": settings.SETTINGS_MODULE,
+            "protocol": self.protocol,
+            "addr": '[%s]' % self.addr if self._raw_ipv6 else self.addr,
+            "port": self.port,
+            "quit_command": quit_command,
+        })
+
+```
